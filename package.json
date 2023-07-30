@@ -76,7 +76,7 @@
 		"webpack-livereload-plugin": "3.0.2"
 	},
 	"dependencies": {
-		"@emotion/is-prop-valid": "0.8.8",
+		"@emotion/is-prop-valid": "1.2.1",
 		"@emotion/memoize": "0.7.4",
 		"@wordpress/a11y": "3.35.1",
 		"@wordpress/annotations": "2.35.7",
