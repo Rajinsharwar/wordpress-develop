@@ -2386,6 +2386,10 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 		return new WP_Error( 'empty_term_name', __( 'A name is required for this term.' ) );
 	}
 
+	if ( mb_strlen( $term ) > 200 ) {
+        return new WP_Error( 'exceeded_term_name', __( 'The term name should not exceed 200 characters.' ) );
+    }
+
 	$defaults = array(
 		'alias_of'    => '',
 		'description' => '',
