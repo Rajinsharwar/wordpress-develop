@@ -7508,6 +7508,7 @@ function HierarchicalTermSelector({
   slug
 }) {
   var _taxonomy$labels$sear, _taxonomy$name;
+  const MAX_CATEGORY_NAME_LENGTH = 200;
 
   const [adding, setAdding] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [formName, setFormName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
@@ -7619,39 +7620,63 @@ function HierarchicalTermSelector({
     setShowForm(!showForm);
   };
 
-  const onAddTerm = async event => {
+  const onAddTerm = async (event) => {
     var _taxonomy$labels$sing;
-
+  
     event.preventDefault();
-
+  
+    // Reset the error message before processing the form
+    let errorMessage = '';
+  
     if (formName === '' || adding) {
       return;
-    } // Check if the term we are adding already exists.
-
-
+    }
+  
+    // Check the length of the category name
+    if (formName.length > MAX_CATEGORY_NAME_LENGTH) {
+      errorMessage = (0, external_wp_i18n_namespaceObject.sprintf)(
+        /* translators: %d: maximum category name length */
+        (0, external_wp_i18n_namespaceObject.__)(
+          'Category name should not exceed %d characters.'
+        ),
+        MAX_CATEGORY_NAME_LENGTH
+      );
+    }
+  
+    // If there is an error message, show the alert and return
+    if (errorMessage) {
+      alert(errorMessage);
+      return;
+    }
+  
     const existingTerm = findTerm(availableTerms, formParent, formName);
-
+  
     if (existingTerm) {
       // If the term we are adding exists but is not selected select it.
-      if (!terms.some(term => term === existingTerm.id)) {
+      if (!terms.some((term) => term === existingTerm.id)) {
         onUpdateTerms([...terms, existingTerm.id]);
       }
-
+  
       setFormName('');
       setFormParent('');
       return;
     }
-
+  
     setAdding(true);
     const newTerm = await addTerm({
       name: formName,
-      parent: formParent ? formParent : undefined
+      parent: formParent ? formParent : undefined,
     });
-    const defaultName = slug === 'category' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Category') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Term');
-    const termAddedMessage = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)(
-    /* translators: %s: taxonomy name */
-    (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__._x)('%s added', 'term'), (_taxonomy$labels$sing = taxonomy?.labels?.singular_name) !== null && _taxonomy$labels$sing !== void 0 ? _taxonomy$labels$sing : defaultName);
-    (0,_wordpress_a11y__WEBPACK_IMPORTED_MODULE_6__.speak)(termAddedMessage, 'assertive');
+    const defaultName = slug === 'category' ? (0, external_wp_i18n_namespaceObject.__)('Category') : (0, external_wp_i18n_namespaceObject.__)('Term');
+    const termAddedMessage = (0, external_wp_i18n_namespaceObject.sprintf)(
+      /* translators: %s: taxonomy name */
+      (0, external_wp_i18n_namespaceObject._x)('%s added', 'term'),
+      (_taxonomy$labels$sing = taxonomy?.labels?.singular_name) !== null &&
+        _taxonomy$labels$sing !== void 0
+        ? _taxonomy$labels$sing
+        : defaultName
+    );
+    (0, external_wp_a11y_namespaceObject.speak)(termAddedMessage, 'assertive');
     setAdding(false);
     setFormName('');
     setFormParent('');
