@@ -386,4 +386,8 @@ function _register_theme_block_patterns() {
 		}
 	}
 }
-add_action( 'init', '_register_theme_block_patterns' );
+
+//Checking if WordPress is in installaing state, to avoid loading the patterns on an empty array of themes.
+if ( ! wp_installing() ) {
+	add_action( 'init', '_register_theme_block_patterns' );
+}
